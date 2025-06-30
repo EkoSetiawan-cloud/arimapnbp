@@ -15,7 +15,7 @@ from residual_analysis_pnbp import residual_analysis_page
 
 
 st.set_page_config(page_title="PNBP ARIMA Project", layout="wide")
-st.sidebar.title("Navigasi Proyek PNBP ARIMA")
+st.sidebar.title("Prediksi PNBP ARIMA/ETS Rolling Forecast")
 
 steps = [
     "1. Input Data",
