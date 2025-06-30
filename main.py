@@ -29,8 +29,8 @@ steps = [
     "9. Uji Stasioneritas Setelah Differencing",
     "10. Grid Search ARIMA",
     "11. ARIMA, Rolling Forecast",
-    "12. Residual Analysis",
-    "13. Exponential Smoothing (ETS) Rolling Forecast"
+    "12. Exponential Smoothing (ETS) Rolling Forecast",
+    "13. Residual Analysis"
    
 ]
 step = st.sidebar.radio("Pilih langkah:", steps)
