@@ -7,7 +7,6 @@ from statsmodels.graphics.tsaplots import plot_acf
 def residual_analysis_page():
     st.header("Residual Analysis (Analisis Error Prediksi)")
 
-    # Pilihan model residual yang ingin dianalisis
     opsi = []
     if 'rolling_eval_result_arima' in st.session_state:
         opsi.append("ARIMA")
@@ -19,38 +18,41 @@ def residual_analysis_page():
 
     model_name = st.selectbox("Pilih model untuk residual analysis:", opsi)
 
-    # Pilih df_rolling sesuai model
     if model_name == "ARIMA":
         df_rolling = st.session_state.get('rolling_eval_result_arima')
     else:
         df_rolling = st.session_state.get('rolling_eval_result_ets')
 
-    if df_rolling is not None:
+    st.write("DEBUG df_rolling")
+    st.write(df_rolling)
+
+    if df_rolling is not None and not df_rolling.empty:
         actuals = df_rolling['Actual']
         predictions = df_rolling['Forecast']
         residuals = predictions - actuals
-        residuals_clean = residuals.dropna()
+        st.write("DEBUG residuals:")
+        st.write(residuals)
 
-        st.info(f"Residual yang dianalisis berasal dari model: **{model_name}**")
-
-        if len(residuals_clean) == 0:
-            st.warning("Semua residual NaN. Model gagal fit di rolling forecast, silakan cek parameter model.")
+        if residuals.isnull().all():
+            st.warning("Semua residual NaN. Coba ulangi rolling forecast, atau cek output prediksi.")
             return
 
         st.subheader("Residual (Prediksi - Aktual)")
-        st.line_chart(residuals_clean.values)
+        st.line_chart(residuals.values)
 
         st.subheader("Density Plot of Residuals")
         fig2, ax2 = plt.subplots()
-        pd.Series(residuals_clean).plot(kind='kde', ax=ax2)
+        pd.Series(residuals.dropna()).plot(kind='kde', ax=ax2)
         st.pyplot(fig2)
 
         st.subheader("Statistik Residual:")
-        st.write(pd.Series(residuals_clean).describe())
+        st.write(pd.Series(residuals.dropna()).describe())
 
         st.subheader("Autocorrelation Plot (ACF) of Residuals")
+        from statsmodels.graphics.tsaplots import plot_acf
         fig3, ax3 = plt.subplots()
-        plot_acf(residuals_clean, lags=min(8, len(residuals_clean)//2-1), ax=ax3)
+        plot_acf(residuals.dropna(), lags=min(8, max(1, len(residuals.dropna())//2-1)), ax=ax3)
         st.pyplot(fig3)
     else:
-        st.warning("Data rolling forecast tidak ditemukan untuk model ini.")
+        st.warning("Data rolling forecast tidak ditemukan atau kosong.")
+
