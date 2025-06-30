@@ -3,9 +3,10 @@ import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
 import numpy as np
 import matplotlib.pyplot as plt
+from statsmodels.graphics.tsaplots import plot_acf
 
 def arima_rolling_eval_page():
-    st.header("🔟 Fitting ARIMA, Rolling Forecast & Evaluasi")
+    st.header("🔟 Fitting ARIMA, Rolling Forecast, & Evaluasi Residual")
     df_train = st.session_state.get('train_df')
     df_test = st.session_state.get('test_df')
     df_diff = st.session_state.get('df_diff')
@@ -51,7 +52,7 @@ def arima_rolling_eval_page():
         })
         st.write(df_eval)
 
-        # Plot
+        # Plot Forecast vs Actual
         fig, ax = plt.subplots()
         ax.plot(df_eval["Tahun"], df_eval["Actual"], label="Actual", marker="o")
         ax.plot(df_eval["Tahun"], df_eval["Forecast"], label="Forecast", marker="o")
@@ -60,5 +61,25 @@ def arima_rolling_eval_page():
         ax.set_title("Forecast vs Actual (Rolling Forecast)")
         ax.legend()
         st.pyplot(fig)
+
+        # --- Analisis Residual ---
+        residuals = np.array(predictions) - actuals
+        st.subheader("Residual Analysis (Error Prediksi)")
+        st.line_chart(residuals)
+        
+        fig2, ax2 = plt.subplots()
+        pd.Series(residuals).plot(kind='kde', ax=ax2)
+        ax2.set_title('Density Plot of Residuals')
+        st.pyplot(fig2)
+
+        st.write("Statistik Residual:")
+        st.write(pd.Series(residuals).describe())
+
+        # --- Plot ACF Residual (optional, advanced) ---
+        st.subheader("Autocorrelation Plot (ACF) of Residuals")
+        fig3, ax3 = plt.subplots()
+        plot_acf(residuals, lags=min(8, len(residuals)//2-1), ax=ax3)
+        st.pyplot(fig3)
+
     else:
         st.info("Selesaikan step sebelumnya (train-test & differencing) dulu.")
