@@ -1,9 +1,3 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from statsmodels.graphics.tsaplots import plot_acf
-
 def residual_analysis_page():
     st.header("Residual Analysis (Analisis Error Prediksi)")
     model_name = st.session_state.get('model_last_used', 'Belum ada model')
@@ -13,21 +7,30 @@ def residual_analysis_page():
         actuals = df_rolling['Actual']
         predictions = df_rolling['Forecast']
         residuals = predictions - actuals
+        residuals_clean = residuals.dropna()
+
+        st.write("Nilai residuals:")
+        st.write(residuals_clean)
+
+        if len(residuals_clean) == 0:
+            st.warning("Semua residual NaN. Model gagal fit di rolling forecast, silakan cek parameter model.")
+            return
 
         st.subheader("Residual (Prediksi - Aktual)")
-        st.line_chart(residuals.values)
+        st.line_chart(residuals_clean.values)
 
         st.subheader("Density Plot of Residuals")
         fig2, ax2 = plt.subplots()
-        pd.Series(residuals).plot(kind='kde', ax=ax2)
+        pd.Series(residuals_clean).plot(kind='kde', ax=ax2)
         st.pyplot(fig2)
 
         st.subheader("Statistik Residual:")
-        st.write(pd.Series(residuals).describe())
+        st.write(pd.Series(residuals_clean).describe())
 
         st.subheader("Autocorrelation Plot (ACF) of Residuals")
         fig3, ax3 = plt.subplots()
-        plot_acf(residuals, lags=min(8, len(residuals)//2-1), ax=ax3)
+        from statsmodels.graphics.tsaplots import plot_acf
+        plot_acf(residuals_clean, lags=min(8, len(residuals_clean)//2-1), ax=ax3)
         st.pyplot(fig3)
     else:
         st.info("Jalankan ARIMA atau ETS rolling forecast dulu.")
