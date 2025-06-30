@@ -7,41 +7,36 @@ from statsmodels.graphics.tsaplots import plot_acf
 def residual_analysis_page():
     st.header("Residual Analysis (Analisis Error Prediksi)")
 
-    # Pilihan model residual yang ingin dianalisis
+    # Cek apakah hasil rolling forecast ARIMA/ETS ada
     opsi = []
     if 'rolling_eval_result_arima' in st.session_state:
         opsi.append("ARIMA")
     if 'rolling_eval_result_ets' in st.session_state:
         opsi.append("ETS")
     if not opsi:
-        st.warning("Belum ada rolling forecast yang dijalankan.")
+        st.warning("Belum ada hasil rolling forecast ARIMA/ETS yang bisa dianalisis.")
         return
 
+    # Dropdown pilih model
     model_name = st.selectbox("Pilih model untuk residual analysis:", opsi)
 
-    # Pilih df_rolling sesuai model
+    # Ambil hasil rolling sesuai model
     if model_name == "ARIMA":
-        df_rolling = st.session_state.get('rolling_eval_result_arima')
+        df_rolling = st.session_state['rolling_eval_result_arima']
     else:
-        df_rolling = st.session_state.get('rolling_eval_result_ets')
+        df_rolling = st.session_state['rolling_eval_result_ets']
 
-    # DEBUG: tampilkan isi session_state dan df_rolling
-    st.write("⚡ ISI SESSION STATE:")
-    st.write(st.session_state)
-    st.write("⚡ ISI DF_ROLLING:")
-    st.write(df_rolling)
+    # Tampilkan debug
+    st.write("Preview data residual (5 baris):")
+    st.write(df_rolling.head())
 
     if df_rolling is not None and not df_rolling.empty:
-        actuals = df_rolling['Actual']
-        predictions = df_rolling['Forecast']
+        actuals = df_rolling['Actual'].astype(float)
+        predictions = df_rolling['Forecast'].astype(float)
         residuals = predictions - actuals
         residuals_clean = residuals.dropna()
 
-        # DEBUG: tampilkan residuals
-        st.write("⚡ ISI RESIDUALS (clean):")
-        st.write(residuals_clean)
-
-        st.info(f"Residual yang dianalisis berasal dari model: **{model_name}**")
+        st.success(f"Residual yang dianalisis berasal dari model: **{model_name}**")
 
         if len(residuals_clean) == 0:
             st.warning("Semua residual NaN. Model gagal fit di rolling forecast, atau parameter tidak cocok.")
