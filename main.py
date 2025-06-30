@@ -59,7 +59,7 @@ elif step == "11. ARIMA, Rolling Forecast":
     arima_rolling_eval_page()
 elif step == "12. Exponential Smoothing (ETS) Rolling Forecast":
     ets_rolling_eval_page()
-elif step == "12. Residual Analysis":
+elif step == "13. Residual Analysis":
     residual_analysis_page()
 
 st.sidebar.markdown("---")
