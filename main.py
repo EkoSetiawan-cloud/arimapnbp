@@ -10,9 +10,8 @@ from differencing_pnbp import differencing_page
 from stationarity_diff_pnbp import stationarity_diff_page
 from grid_search_arima_pnbp import grid_search_arima_page
 from arima_rolling_eval_pnbp import arima_rolling_eval_page
-from ets_rolling_eval_pnbp import ets_rolling_eval_page
 from residual_analysis_pnbp import residual_analysis_page
-
+from ets_rolling_eval_pnbp import ets_rolling_eval_page
 
 
 st.set_page_config(page_title="PNBP ARIMA Project", layout="wide")
