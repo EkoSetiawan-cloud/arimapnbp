@@ -1,16 +1,37 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.graphics.tsaplots import plot_acf
+
 def residual_analysis_page():
     st.header("Residual Analysis (Analisis Error Prediksi)")
-    model_name = st.session_state.get('model_last_used', 'Belum ada model')
-    st.info(f"Residual yang dianalisis berasal dari model: **{model_name}**")
-    df_rolling = st.session_state.get('rolling_eval_result')
+
+    # Pilihan model residual yang ingin dianalisis
+    opsi = []
+    if 'rolling_eval_result_arima' in st.session_state:
+        opsi.append("ARIMA")
+    if 'rolling_eval_result_ets' in st.session_state:
+        opsi.append("ETS")
+    if not opsi:
+        st.warning("Belum ada rolling forecast yang dijalankan.")
+        return
+
+    model_name = st.selectbox("Pilih model untuk residual analysis:", opsi)
+
+    # Pilih df_rolling sesuai model
+    if model_name == "ARIMA":
+        df_rolling = st.session_state.get('rolling_eval_result_arima')
+    else:
+        df_rolling = st.session_state.get('rolling_eval_result_ets')
+
     if df_rolling is not None:
         actuals = df_rolling['Actual']
         predictions = df_rolling['Forecast']
         residuals = predictions - actuals
         residuals_clean = residuals.dropna()
 
-        st.write("Nilai residuals:")
-        st.write(residuals_clean)
+        st.info(f"Residual yang dianalisis berasal dari model: **{model_name}**")
 
         if len(residuals_clean) == 0:
             st.warning("Semua residual NaN. Model gagal fit di rolling forecast, silakan cek parameter model.")
@@ -29,8 +50,7 @@ def residual_analysis_page():
 
         st.subheader("Autocorrelation Plot (ACF) of Residuals")
         fig3, ax3 = plt.subplots()
-        from statsmodels.graphics.tsaplots import plot_acf
         plot_acf(residuals_clean, lags=min(8, len(residuals_clean)//2-1), ax=ax3)
         st.pyplot(fig3)
     else:
-        st.info("Jalankan ARIMA atau ETS rolling forecast dulu.")
+        st.warning("Data rolling forecast tidak ditemukan untuk model ini.")
