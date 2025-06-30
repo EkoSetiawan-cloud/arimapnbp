@@ -10,7 +10,6 @@ def arima_rolling_eval_page():
     df_test = st.session_state.get('test_df')
     df_diff = st.session_state.get('df_diff')
     if df_train is not None and df_test is not None and df_diff is not None:
-        # Pilih d=1 jika differencing, p & q default (silakan edit manual, atau tunjukkan ACF/PACF sebelumnya)
         p = st.number_input("Nilai p (AR):", min_value=0, value=1)
         d = 1  # Orde differencing
         q = st.number_input("Nilai q (MA):", min_value=0, value=1)
@@ -19,17 +18,21 @@ def arima_rolling_eval_page():
         train_series = df_train['Total_PNBP']
         test_series = df_test['Total_PNBP']
 
-        # Rolling forecast one-step ahead
+        # Rolling forecast untuk seluruh tahun test
         history = list(train_series)
         predictions = []
+        log_pred = []
         for t in range(len(test_series)):
             model = ARIMA(history, order=(p,d,q))
             model_fit = model.fit()
             output = model_fit.forecast()
-            pred = output[0]   # <= fix di sini
+            pred = output[0]
             predictions.append(pred)
-            history.append(test_series.iloc[t])
-        
+            obs = test_series.iloc[t]
+            history.append(obs)
+            log_pred.append((df_test['Tahun'].iloc[t], pred, obs))
+            st.write(f"Step {t+1}: Tahun {df_test['Tahun'].iloc[t]}, predicted={pred:.2f}, expected={obs:.2f}")
+
         # Evaluasi
         actuals = test_series.values
         mae = np.mean(np.abs(np.array(predictions) - actuals))
