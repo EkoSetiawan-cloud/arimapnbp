@@ -51,6 +51,7 @@ def arima_rolling_eval_page():
         })
         st.write(df_eval)
         st.session_state['rolling_eval_result'] = df_eval
+        st.session_state['model_last_used'] = 'ARIMA'
 
         # Plot
         fig, ax = plt.subplots()
