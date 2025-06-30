@@ -9,6 +9,8 @@ from acf_pacf_pnbp import acf_pacf_page
 from differencing_pnbp import differencing_page
 from stationarity_diff_pnbp import stationarity_diff_page
 from arima_rolling_eval_pnbp import arima_rolling_eval_page
+from grid_search_arima_pnbp import grid_search_arima_page
+
 
 st.set_page_config(page_title="PNBP ARIMA Project", layout="wide")
 st.sidebar.title("Navigasi Proyek PNBP ARIMA")
@@ -23,7 +25,8 @@ steps = [
     "7. Plot ACF & PACF",
     "8. Differencing Data",
     "9. Uji Stasioneritas Setelah Differencing",
-    "10. ARIMA, Rolling Forecast & Evaluasi"
+    "10. ARIMA, Rolling Forecast & Evaluasi",
+    "11. Grid Search ARIMA"
 ]
 step = st.sidebar.radio("Pilih langkah:", steps)
 
@@ -47,6 +50,9 @@ elif step == "9. Uji Stasioneritas Setelah Differencing":
     stationarity_diff_page()
 elif step == "10. ARIMA, Rolling Forecast & Evaluasi":
     arima_rolling_eval_page()
+elif step == "11. Grid Search ARIMA":
+    grid_search_arima_page()
+
 
 st.sidebar.markdown("---")
 st.sidebar.info("Jalankan modul berurutan untuk hasil optimal.")
