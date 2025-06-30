@@ -50,6 +50,8 @@ def arima_rolling_eval_page():
             "Forecast": predictions
         })
         st.write(df_eval)
+
+        # SIMPAN MODEL TERAKHIR
         st.session_state['rolling_eval_result'] = df_eval
         st.session_state['model_last_used'] = 'ARIMA'
 
