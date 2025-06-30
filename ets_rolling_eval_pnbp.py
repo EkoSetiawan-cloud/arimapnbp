@@ -47,9 +47,8 @@ def ets_rolling_eval_page():
         })
         st.write(df_eval)
 
-        # SIMPAN MODEL TERAKHIR
-        st.session_state['rolling_eval_result'] = df_eval
-        st.session_state['model_last_used'] = 'ETS'
+        # SIMPAN MODEL TERAKHIR (ETS)
+        st.session_state['rolling_eval_result_ets'] = df_eval
 
         # Plot
         fig, ax = plt.subplots()
