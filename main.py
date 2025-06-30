@@ -12,6 +12,9 @@ from grid_search_arima_pnbp import grid_search_arima_page
 from arima_rolling_eval_pnbp import arima_rolling_eval_page
 from ets_rolling_eval_pnbp import ets_rolling_eval_page
 from residual_analysis_pnbp import residual_analysis_page
+from compare_rolling_models_pnbp import compare_rolling_models_page
+
+
 
 
 st.set_page_config(page_title="PNBP ARIMA Project", layout="wide")
@@ -30,8 +33,8 @@ steps = [
     "10. Grid Search ARIMA",
     "11. ARIMA, Rolling Forecast",
     "12. Exponential Smoothing (ETS) Rolling Forecast",
-    "13. Residual Analysis"
-   
+    "13. Residual Analysis",
+    "14. Perbandingan ARIMA vs ETS"
 ]
 step = st.sidebar.radio("Pilih langkah:", steps)
 
@@ -61,6 +64,8 @@ elif step == "12. Exponential Smoothing (ETS) Rolling Forecast":
     ets_rolling_eval_page()
 elif step == "13. Residual Analysis":
     residual_analysis_page()
+elif step == "14. Perbandingan ARIMA vs ETS":
+    compare_rolling_models_page()
 
 st.sidebar.markdown("---")
 st.sidebar.info("Jalankan modul berurutan untuk hasil optimal.")
