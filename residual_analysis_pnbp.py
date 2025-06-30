@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 from statsmodels.graphics.tsaplots import plot_acf
 
 def residual_analysis_page():
-    st.header("12️⃣ Residual Analysis (Analisis Error Prediksi)")
+    st.header("Residual Analysis (Analisis Error Prediksi)")
+    model_name = st.session_state.get('model_last_used', 'Belum ada model')
+    st.info(f"Residual yang dianalisis berasal dari model: **{model_name}**")
     df_rolling = st.session_state.get('rolling_eval_result')
     if df_rolling is not None:
         actuals = df_rolling['Actual']
@@ -28,4 +30,4 @@ def residual_analysis_page():
         plot_acf(residuals, lags=min(8, len(residuals)//2-1), ax=ax3)
         st.pyplot(fig3)
     else:
-        st.info("Jalankan ARIMA rolling forecast dulu.")
+        st.info("Jalankan ARIMA atau ETS rolling forecast dulu.")
